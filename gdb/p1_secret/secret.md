@@ -1,4 +1,7 @@
-﻿gdb is most often used for debugging compiled programs. However, it is also very useful as a first-line investigative tool. In this activity, we will use gdb to find a secret integer that is generated randomly at runtime.
+﻿
+# Using GDB for the First Time
+
+gdb is most often used for debugging compiled programs. However, it is also very useful as a first-line investigative tool. In this activity, we will use gdb to find a secret integer that is generated randomly at runtime.
 
 While printing the value of a variable seems like one of the easiest things you can do, we will actively try and run into as much useful newbie info as possible. That way, we can get the frustration out of the way early. After all, you won't want to use gdb for your classwork if you aren’t confident navigating it!
 
@@ -19,14 +22,16 @@ Start gdb in your second terminal. You will likely need to run it with `sudo` as
 For this activity, we will use the slightly more readable  TUI mode. This mode may not be available depending on your terminal, and this is especially common when debugging embedded systems over serial, so always be prepared to work a bit harder in CLI mode if that is the case.
 
 	gdb --tui
-	
+
+TUI mode adds a few extra hotkeys to be aware of. The most important is Ctrl-L, to re-draw the screen in the event it gets messed up, usually caused by the program you’re debugging writing to the same terminal as gdb. The rest of these hotkeys can be found [here](https://sourceware.org/gdb/onlinedocs/gdb/TUI-Keys.html).
+
 Now, attach to the running secret process using the attach command in gdb. Provide the PID that we just looked up.
 
 	(gdb) attach 48997
 
 ![Attaching but finding no source](nosource.png)
 	
-When we attach to a process in this fashion, we *may* not initially have source code available, because gdb doesn't know what file the process was loaded from, which contains the source code we included when compiling. We know where the file is though, so we just need to use the symbol-file command to load it.
+When we attach to a process in this fashion, we *may* not initially have source code available, because gdb might not know what file the process was loaded from, which contains the source code we included when compiling. We know where the file is though, so we just need to use the symbol-file command to load it.
 
 	(gdb) symbol-file secret
 	
@@ -34,7 +39,7 @@ Note that gdb uses the directory it was launched from as the *working directory*
 
 	(gdb) symbol-file p1_secret/secret
 	
-You can see the current working directory using `pwd`, and change it using `cd`, just like in a regular old bash terminal. Since we started gdb with `sudo` there's a high chance our working directory is currently /root . If this is the case, you can skip having to `cd` to the project by restarting gdb with the `--cd=` option set to the current directory.
+You can see the current working directory using `pwd`, and change it using `cd`, just like in a regular old bash terminal. However, since we started gdb with `sudo` there's a high chance our working directory is currently /root . If this is the case, you can skip having to `cd` to the project by restarting gdb with the `--cd=` option set to the current directory.
 
 	sudo gdb --tui --cd=.
 
@@ -78,6 +83,26 @@ Go back to the terminal running secret and enter your secret number. Congratulat
 
 ![Backtrace usage](finish.png)
 
-Notes:
+## Further Reading
 
-Add section on `s` `n` and `ret`
+Virtually every command in gdb can be used as a parameter to `help` , print in particular has a huge number of options that make viewing data during debugging significantly easier, so long as you’re infomed of said options!
+
+	help print
+
+The `help` command itself will also give you a selection of categories to choose from.
+
+In addition to breakpoints, we can also break automatically when a variable is changed, using watchpoints.
+
+	watch secret
+
+Breakpoints can also be restricted with conditional statements
+
+	breakpoint 15 if i == 100
+
+This will break only when i == 100, useful for stopping on a specific loop iteration.
+
+We will explore some of these more advanced techniques in the next activity.
+
+This activity was inspired in part by Greg Law’s excellent video: https://www.youtube.com/watch?v=PorfLSr3DDI
+
+
