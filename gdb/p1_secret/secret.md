@@ -34,9 +34,9 @@ Note that gdb uses the directory it was launched from as the *working directory*
 
 	(gdb) symbol-file p1_secret/secret
 	
-You can see the current working directory using `pwd`, and change it using `cd`, just like in a regular old bash terminal. If you started gdb with `sudo` there's a high chance your working directory is currently /root . If this is the case, you can skip having to `cd` to the project by restarting gdb with the `--cd=` option set to the current directory.
+You can see the current working directory using `pwd`, and change it using `cd`, just like in a regular old bash terminal. Since we started gdb with `sudo` there's a high chance our working directory is currently /root . If this is the case, you can skip having to `cd` to the project by restarting gdb with the `--cd=` option set to the current directory.
 
-	gdb --tui --cd=.
+	sudo gdb --tui --cd=.
 
 Whenever you use `symbol-file`, refresh the source code window by running `list`
 
@@ -48,9 +48,9 @@ Now we should see the source code almost exactly as it appears in the source fil
 
 However, the program is not actually stopped in this part of the code. Since we started debugging a running process, we are likely paused several levels deep in the scanf function. Use the backtrace (`bt`) command to see where we are.
 
-(picture)
+At the bottom of our stack trace we can see the function main. We would like to get out of scanf, back to main, so we can have access to `int secret`. We can't access it right now even though we can see it in the source code, because it is outside the current *stack frame*. Remember that it is not valid to access a local variable outside the scope of the function that created it!
 
-At the bottom of our stack trace we can see the function main. We would like to get out of scnaf, back to main, so we can have access to `int secret`. We can't access it right now even though we can see it in the source code, because it is outside the current *stack frame*. Remember that it is not valid to access a local variable outside the scope of the function that created it!
+![Backtrace usage](bt.png)
 
 An easy way to get back to the main function is to put a breakpoint on the line containing the if statement. A breakpoint is used to pause execution just before the selected line.
 
@@ -66,14 +66,16 @@ Back to the activity at hand. Our program will break before the if statement. Ex
 
 	print secret
 
+![Backtrace usage](print.png)
+
 Note the secret number for later. The $1 on the left side of the output is an automatically chosen name for quick reference, which you can use in later commands instead of typing the full number. These are used just like bash variables, and can be included in more complex statements. We will see how this can be very convenient when dealing with addresses in the next activity.
 
 All we have to do now is continue our program again, and enter our secret number. Let’s also delete our breakpoint so it doesn’t pause again. The `delete` command can be used to remove any breakpoints we created, calling it with no arguments will let you delete all breakpoints. To see what breakpoints currently exist, simply run `breakpoint` with no arguments. We could have also used a temporary breakpoint `tb`  which is just a breakpoint that is deleted the first time it is hit.
 
 Go back to the terminal running secret and enter your secret number. Congratulations!
 
+![Backtrace usage](finish.png)
+
 Notes:
 
 Add section on `s` `n` and `ret`
-A
-
