@@ -26,7 +26,7 @@ Now, attach to the running secret process using the attach command in gdb. Provi
 
 ![Attaching but finding no source](nosource.png)
 	
-When we attach to a process in this fashion, we will not initially have source code available, because gdb doesn't know what file the process was loaded from, which contains the source code we included when compiling. We know where the file is though, so we just need to use the symbol-file command to load it.
+When we attach to a process in this fashion, we *may* not initially have source code available, because gdb doesn't know what file the process was loaded from, which contains the source code we included when compiling. We know where the file is though, so we just need to use the symbol-file command to load it.
 
 	(gdb) symbol-file secret
 	
@@ -55,7 +55,9 @@ At the bottom of our stack trace we can see the function main. We would like to 
 An easy way to get back to the main function is to put a breakpoint on the line containing the if statement. A breakpoint is used to pause execution just before the selected line.
 
 	(gdb) breakpoint 17
+
 or
+
 	(gdb) b 17
 	
 Now we can run `continue` to unpause program execution. Notice how the `(gdb)` prompt no longer appears in your debugging terminal, this is because the program is running again, waiting for user input; scanf still expects us to enter something. Go back to the terminal running secret and enter any number, then press enter. 
