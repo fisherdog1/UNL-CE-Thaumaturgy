@@ -23,6 +23,8 @@ For this activity, we will use the slightly more readable  TUI mode. This mode m
 Now, attach to the running secret process using the attach command in gdb. Provide the PID that we just looked up.
 
 	(gdb) attach 48997
+
+![Attaching but finding no source](nosource.png)
 	
 When we attach to a process in this fashion, we will not initially have source code available, because gdb doesn't know what file the process was loaded from, which contains the source code we included when compiling. We know where the file is though, so we just need to use the symbol-file command to load it.
 
@@ -39,8 +41,10 @@ You can see the current working directory using `pwd`, and change it using `cd`,
 Whenever you use `symbol-file`, refresh the source code window by running `list`
 
 	(gdb) list
-	
+
 Now we should see the source code almost exactly as it appears in the source file secret.c.
+
+![Attaching and finding source](source.png)
 
 However, the program is not actually stopped in this part of the code. Since we started debugging a running process, we are likely paused several levels deep in the scanf function. Use the backtrace (`bt`) command to see where we are.
 
