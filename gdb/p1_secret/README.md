@@ -15,7 +15,7 @@ At this point we can either start the program directly from gdb, or start the se
 
 Start the executable in its own terminal with `./secret` We need to know the PID of the process we just started, so open your second terminal, run `ps -a` and look for the name "secret", the number in the left column is the running program's PID.
 
-![ps usage](ps.png)
+![ps usage](images/ps.png)
 
 Start gdb in your second terminal. You will likely need to run it with `sudo` as we will be attaching to a process that gdb doesn't "own" (In this case, gdb isn't the *parent* process of secret.). 
 
@@ -29,7 +29,7 @@ Now, attach to the running secret process using the attach command in gdb. Provi
 
 	(gdb) attach 48997
 
-![Attaching but finding no source](nosource.png)
+![Attaching but finding no source](images/nosource.png)
 	
 When we attach to a process in this fashion, we *may* not initially have source code available, because gdb might not know what file the process was loaded from, which contains the source code we included when compiling. We know where the file is though, so we just need to use the symbol-file command to load it.
 
@@ -49,13 +49,13 @@ Whenever you use `symbol-file`, refresh the source code window by running `list`
 
 Now we should see the source code almost exactly as it appears in the source file secret.c.
 
-![Attaching and finding source](source.png)
+![Attaching and finding source](images/source.png)
 
 However, the program is not actually stopped in this part of the code. Since we started debugging a running process, we are likely paused several levels deep in the scanf function. Use the backtrace (`bt`) command to see where we are.
 
 At the bottom of our stack trace we can see the function main. We would like to get out of scanf, back to main, so we can have access to `int secret`. We can't access it right now even though we can see it in the source code, because it is outside the current *stack frame*. Remember that it is not valid to access a local variable outside the scope of the function that created it!
 
-![Backtrace usage](bt.png)
+![Backtrace usage](images/bt.png)
 
 An easy way to get back to the main function is to put a breakpoint on the line containing the if statement. A breakpoint is used to pause execution just before the selected line.
 
@@ -73,7 +73,7 @@ Back to the activity at hand. Our program will break before the if statement. Ex
 
 	print secret
 
-![Backtrace usage](print.png)
+![Backtrace usage](images/print.png)
 
 Note the secret number for later. The $1 on the left side of the output is an automatically chosen name for quick reference, which you can use in later commands instead of typing the full number. These are used just like bash variables, and can be included in more complex statements. We will see how this can be very convenient when dealing with addresses in the next activity.
 
@@ -81,7 +81,7 @@ All we have to do now is continue our program again, and enter our secret number
 
 Go back to the terminal running secret and enter your secret number. Congratulations!
 
-![Backtrace usage](finish.png)
+![Backtrace usage](images/finish.png)
 
 ## Further Reading
 
